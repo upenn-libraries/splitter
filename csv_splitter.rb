@@ -23,6 +23,10 @@ def identifier_missing?(identifier_location)
   return identifier_location.nil? || identifier_location.empty?
 end
 
+def offset(index)
+  return index == 0 ? index : index-1
+end
+
 def filename(filename_string)
   return filename_string.downcase.gsub(/[^0-9A-Za-z.\-]/, '_')
 end
@@ -37,7 +41,7 @@ warning_logger = Logger.new('| tee warning_logger.log')
 warning_logger.level = Logger::WARN
 
 csv = ARGV[0]
-index_of_identifier = ARGV[1].to_i
+index_of_identifier = offset(ARGV[1].to_i)
 batch_size = ARGV[2].to_i
 
 headers = CSV.readlines(csv, :encoding => 'ISO8859-1:utf-8').first
