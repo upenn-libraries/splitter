@@ -4,8 +4,6 @@ require 'csv'
 require 'rubyXL'
 require 'logger'
 
-require 'pry'
-
 def missing_args?
   return (ARGV[0].nil? || ARGV[1].nil? || ARGV[2].nil?)
 end
