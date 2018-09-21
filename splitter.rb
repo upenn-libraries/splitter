@@ -63,9 +63,10 @@ end
 
 abort('Specify a path to an Excel or CSV file, an integer for column whose value should be considered the identifier for each row, and the batch size that should be used for this job') if missing_args?
 
+progname = File.basename __FILE__
 logger = Logger.new('| tee logger.log')
 logger.level = Logger::INFO
-logger.info('Script run started')
+logger.info(progname) { 'Script run started' }
 
 warning_logger = Logger.new('| tee warning_logger.log')
 warning_logger.level = Logger::WARN
@@ -80,8 +81,8 @@ content_array.each_slice(batch_size).with_index do |batch, batch_index|
   set_up_spreadsheet(workbook, headers)
   batch.each_with_index do |row, index|
     if identifier_missing?(row[index_of_identifier])
-      logger.warn("missing identifier for row ##{index}, logging and skipping...")
-      warning_logger.warn("Row ##{index} in #{csv} missing identifier specified as being in column #{index_of_identifier}")
+      logger.warn(progname) { "missing identifier for row ##{index}, logging and skipping..." }
+      warning_logger.warn(progname) { "Row ##{index} in #{csv} missing identifier specified as being in column #{index_of_identifier}" }
       next
     end
     row.each_with_index do |value, i|
@@ -89,6 +90,6 @@ content_array.each_slice(batch_size).with_index do |batch, batch_index|
     end
   end
   spreadsheet_name = "#{filename("#{batch.first[index_of_identifier]}_through_#{batch.last[index_of_identifier]}")}.xlsx"
-  logger.info("Writing spreadsheet #{spreadsheet_name}...")
+  logger.info(progname) { "Writing spreadsheet #{spreadsheet_name}..." }
   workbook.write(spreadsheet_name)
 end
